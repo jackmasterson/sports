@@ -1,7 +1,12 @@
 var key = "zrdfb8pppypw";
 //var url = 
 //var url = "";
-    
+var FFNerd = require('fantasy-football-nerd');
+var ff = new FFNerd({ api_key: "zrdfb8pppypw" });
+ 
+ff.teams(function(teams){
+    console.log('Got teams');
+});
 
 /*$.ajax({
 	url: "http://www.fantasyfootballnerd.com/service/players/json/zrdfb8pppypw/QB/",
