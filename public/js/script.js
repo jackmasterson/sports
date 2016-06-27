@@ -48,31 +48,37 @@ var rest = {
 	}
 };
 
-var map;
-var service;
-var infowindow;
-
-
-
- var map;
- var infowindow;
+var geocoder;
+  var map;
 
  var mapped = {
 
-      initMap: function() {
-      	var that = this;
-        that.usa = {lat: 37.09024, lng: -95.712891};
+  initMap: function() {
+  	var that = this;
+	    geocoder = new google.maps.Geocoder();
+	    var latlng = new google.maps.LatLng(37.09024, -95.712891);
+	    var mapOptions = {
+	      zoom: 4,
+	      center: latlng
+	    }
+	    map = new google.maps.Map(document.getElementById("map"), mapOptions);
+		this.codeAddress();
+	},
 
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: that.usa,
-          zoom: 4//,
-         // mapTypeId: google.maps.MapTypeId.SATELLITE
+  codeAddress: function() {
+    var address = "Oregon State";
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        //map.setCenter(results[0].geometry.location);
+        var marker = new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location
         });
-
-
-
-        this.getPoints();
-    },
+      } else {
+        alert("Geocode was not successful for the following reason: " + status);
+      }
+    });
+  },
 
     getPoints: function() {
     //	console.log('place');
@@ -125,9 +131,8 @@ var infowindow;
         ];*/
      //    	return that.getHeat();
         
-    },
-
-    callback: function(results, status, pagination) {
+    }
+   /* callback: function(results, status, pagination) {
     //	console.log('place');
     	var that = this;
     //	console.log(results);
@@ -136,7 +141,7 @@ var infowindow;
         if (status === google.maps.places.PlacesServiceStatus.OK) {
         	console.log(results[0].name);
 
-          for (var i = 0; i < results.length; i++) {
+   /*       for (var i = 0; i < results.length; i++) {
 	     //     	console.log(results[i]);
 	          	var lat = results[i].geometry.location.lat();
 	          	var lng = results[i].geometry.location.lng();
@@ -178,7 +183,7 @@ var infowindow;
 
 	      }
         
-    }//,
+    }//,*/
 	
 /*	createMarker: function(place) {
 	//	console.log('place');
