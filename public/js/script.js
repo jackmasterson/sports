@@ -18,8 +18,9 @@ var ajax = {
 			success: function(data){
 		//		console.log(data);
 				model.info.push(data);
-				console.log(model.info());
-				rest.init();
+		//		console.log(model.info());
+				//rest.init();
+		//		mapped.initMap();
 			}
 		});
 	}
@@ -60,10 +61,10 @@ var infowindow;
 
       initMap: function() {
       	var that = this;
-        that.pyrmont = {lat: 37.09024, lng: -95.712891};
+        that.usa = {lat: 37.09024, lng: -95.712891};
 
         map = new google.maps.Map(document.getElementById('map'), {
-          center: that.pyrmont,
+          center: that.usa,
           zoom: 4//,
          // mapTypeId: google.maps.MapTypeId.SATELLITE
         });
@@ -98,16 +99,19 @@ var infowindow;
 	},
 
 	getPointInfo: function() {
-		console.log(this.queryArr);
+	//	console.log(this.queryArr);
     	var that = this;
+    	var request;
     	var service = new google.maps.places.PlacesService(map);
         that.queryArr.forEach(function(data){
-			that.request = {
-	        	location: that.pyrmont,
-	        	radius: '1500',
+        //	console.log(data);
+        //	console.log(data.college);
+			request = {
+	        	location: that.usa,
+	        	radius: '2500',
 	        	query: data.college
 	        };
-	        service.textSearch(that.request, that.callback);
+	        service.textSearch(request, that.callback);
 		});
 
 
@@ -123,21 +127,24 @@ var infowindow;
         
     },
 
-    callback: function(results, status) {
-    	console.log('place');
+    callback: function(results, status, pagination) {
+    //	console.log('place');
     	var that = this;
+    //	console.log(results);
+
 
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-        	console.log(results);
+        	console.log(results[0].name);
 
           for (var i = 0; i < results.length; i++) {
-	          	console.log(results[i]);
+	     //     	console.log(results[i]);
 	          	var lat = results[i].geometry.location.lat();
 	          	var lng = results[i].geometry.location.lng();
+	          	console.log(lat, lng);
 	          //	console.log(lat, lng);
 	           // mapped.createMarker(results[i]);
 	            function heatSpot(){
-	            	console.log(lat, lng);
+	      //      	console.log(lat, lng);
 		            return [
 			          new google.maps.LatLng(lat, lng),
 			        //  new google.maps.LatLng(37.751266, -122.403355)
@@ -171,10 +178,10 @@ var infowindow;
 
 	      }
         
-    },
+    }//,
 	
-	createMarker: function(place) {
-		console.log('place');
+/*	createMarker: function(place) {
+	//	console.log('place');
         var placeLoc = place.geometry.location;
         var marker = new google.maps.Marker({
           map: map,
@@ -185,15 +192,15 @@ var infowindow;
           infowindow.setContent(place.name);
           infowindow.open(map, this);
         });
-    },
+    },*/
 
-    getHeat: function(place){
-    	console.log(place)
+  /*  getHeat: function(place){
+    //	console.log(place)
     	     return [
 	          new google.maps.LatLng(37.782551, -122.445368),
 	          new google.maps.LatLng(37.751266, -122.403355)
 	        ];
-    }
+    }*/
 };
 
 ko.applyBindings(viewModel.init());
