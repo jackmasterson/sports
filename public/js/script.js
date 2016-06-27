@@ -1,5 +1,6 @@
 var model = {
-	info: ko.observableArray()
+	info: ko.observableArray(),
+	college: ko.observableArray()
 }
 
 var viewModel = {
@@ -36,6 +37,8 @@ var rest = {
 			// console.log(college);
 			 if(college !== ''){
 //			 	console.log(data);
+			//	model.college()[0].push(data);
+
 			 }
 
 		 })
@@ -72,16 +75,45 @@ var infowindow;
 
     getPoints: function() {
     //	console.log('place');
+    	//console.log(model.info()[0]);
     	var that = this;
-    	var request = {
-        	location: that.pyrmont,
-        	radius: '1500',
-        	query: 'ucla'
-        };
+		 var info = model.info()[0];
+		 this.queryArr = [];
+		 info.forEach(function(data){
+		 	 var name = data.name;
+			 var college = data.college;
+			 var position = data.position;
+			// console.log(college);
+			 if(college !== ''){
+			 //	console.log(data);
+			 	that.queryArr.push(data);
+			 //	console.log(this.queryArr);
+			//	model.college()[0].push(data);
 
-        infowindow = new google.maps.InfoWindow();
-        var service = new google.maps.places.PlacesService(map);
-        service.textSearch(request, that.callback);
+			 }
+			 
+		 });
+
+		 that.getPointInfo();
+	},
+
+	getPointInfo: function() {
+		console.log(this.queryArr);
+    	var that = this;
+    	var service = new google.maps.places.PlacesService(map);
+        that.queryArr.forEach(function(data){
+			that.request = {
+	        	location: that.pyrmont,
+	        	radius: '1500',
+	        	query: data.college
+	        };
+	        service.textSearch(that.request, that.callback);
+		});
+
+
+//        infowindow = new google.maps.InfoWindow();
+        
+        
 	//	this.callback();
  /*       return [
           new google.maps.LatLng(37.782551, -122.445368),
@@ -99,25 +131,25 @@ var infowindow;
         	console.log(results);
 
           for (var i = 0; i < results.length; i++) {
-          	console.log(results[i]);
-          	var lat = results[i].geometry.location.lat();
-          	var lng = results[i].geometry.location.lng();
-          //	console.log(lat, lng);
-           // mapped.createMarker(results[i]);
-            function heatSpot(){
-            	console.log(lat, lng);
-	            return [
-		          new google.maps.LatLng(lat, lng),
-		        //  new google.maps.LatLng(37.751266, -122.403355)
-		        ];
-            }
+	          	console.log(results[i]);
+	          	var lat = results[i].geometry.location.lat();
+	          	var lng = results[i].geometry.location.lng();
+	          //	console.log(lat, lng);
+	           // mapped.createMarker(results[i]);
+	            function heatSpot(){
+	            	console.log(lat, lng);
+		            return [
+			          new google.maps.LatLng(lat, lng),
+			        //  new google.maps.LatLng(37.751266, -122.403355)
+			        ];
+	            }
+          }
 
 	    	 heatmap = new google.maps.visualization.HeatmapLayer({
 	          data: heatSpot(),
 	          map: map
 	        });
 
-	    
 	        var gradient = [
 	          'rgba(0, 255, 255, 0)',
 	          'rgba(0, 255, 255, 1)',
@@ -138,7 +170,7 @@ var infowindow;
 	            //mapped.createHeat(results[i]);
 
 	      }
-        }
+        
     },
 	
 	createMarker: function(place) {
