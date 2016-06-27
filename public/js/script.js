@@ -53,8 +53,8 @@ var geocoder;
 
  var mapped = {
 
-  initMap: function() {
-  	var that = this;
+    initMap: function() {
+  		var that = this;
 	    geocoder = new google.maps.Geocoder();
 	    var latlng = new google.maps.LatLng(37.09024, -95.712891);
 	    var mapOptions = {
@@ -62,99 +62,57 @@ var geocoder;
 	      center: latlng
 	    }
 	    map = new google.maps.Map(document.getElementById("map"), mapOptions);
-		this.codeAddress();
+		this.getPoints();
+		//this.codeAddress();
 	},
-
-  codeAddress: function() {
-    var address = "Oregon State";
-    geocoder.geocode( { 'address': address}, function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        //map.setCenter(results[0].geometry.location);
-        var marker = new google.maps.Marker({
-            map: map,
-            position: results[0].geometry.location
-        });
-      } else {
-        alert("Geocode was not successful for the following reason: " + status);
-      }
-    });
-  },
 
     getPoints: function() {
     //	console.log('place');
     	//console.log(model.info()[0]);
     	var that = this;
+    	var address;
 		 var info = model.info()[0];
 		 this.queryArr = [];
 		 info.forEach(function(data){
 		 	 var name = data.name;
 			 var college = data.college;
 			 var position = data.position;
-			// console.log(college);
+			
 			 if(college !== ''){
-			 //	console.log(data);
-			 	that.queryArr.push(data);
-			 //	console.log(this.queryArr);
-			//	model.college()[0].push(data);
-
+			 	that.queryArr.push(college);
 			 }
-			 
-		 });
 
-		 that.getPointInfo();
+		 });
+			 	
+
+		 this.getPointInfo();
 	},
 
 	getPointInfo: function() {
-	//	console.log(this.queryArr);
-    	var that = this;
-    	var request;
-    	var service = new google.maps.places.PlacesService(map);
-        that.queryArr.forEach(function(data){
-        //	console.log(data);
-        //	console.log(data.college);
-			request = {
-	        	location: that.usa,
-	        	radius: '2500',
-	        	query: data.college
-	        };
-	        service.textSearch(request, that.callback);
-		});
+		var that = this;
+		console.log(this.queryArr);
+		var address;
+		that.queryArr.forEach(function(info){
+			address = info;
+			console.log(address)
+    //	var that = this;
 
+    	
+	    geocoder.geocode( { 'address': address }, function(results, status) {
 
-//        infowindow = new google.maps.InfoWindow();
-        
-        
-	//	this.callback();
- /*       return [
-          new google.maps.LatLng(37.782551, -122.445368),
-          new google.maps.LatLng(37.751266, -122.403355)
-        ];*/
-     //    	return that.getHeat();
-        
-    }
-   /* callback: function(results, status, pagination) {
-    //	console.log('place');
-    	var that = this;
-    //	console.log(results);
+	      if (status == google.maps.GeocoderStatus.OK) {
 
-
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-        	console.log(results[0].name);
-
-   /*       for (var i = 0; i < results.length; i++) {
-	     //     	console.log(results[i]);
-	          	var lat = results[i].geometry.location.lat();
-	          	var lng = results[i].geometry.location.lng();
-	          	console.log(lat, lng);
-	          //	console.log(lat, lng);
-	           // mapped.createMarker(results[i]);
-	            function heatSpot(){
-	      //      	console.log(lat, lng);
-		            return [
-			          new google.maps.LatLng(lat, lng),
-			        //  new google.maps.LatLng(37.751266, -122.403355)
-			        ];
-	            }
+			for (var i = 0; i < results.length; i++) {
+				     //     	console.log(results[i]);
+          	var lat = results[i].geometry.location.lat();
+          	var lng = results[i].geometry.location.lng();
+          	console.log(lat, lng);
+            function heatSpot(){
+	            return [
+		          new google.maps.LatLng(lat, lng),
+		        //  new google.maps.LatLng(37.751266, -122.403355)
+		        ];
+            }
           }
 
 	    	 heatmap = new google.maps.visualization.HeatmapLayer({
@@ -181,31 +139,14 @@ var geocoder;
 	        heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
 	            //mapped.createHeat(results[i]);
 
+	      
+	      } else {
+	        alert("Geocode was not successful for the following reason: " + status);
 	      }
-        
-    }//,*/
-	
-/*	createMarker: function(place) {
-	//	console.log('place');
-        var placeLoc = place.geometry.location;
-        var marker = new google.maps.Marker({
-          map: map,
-          position: place.geometry.location
-        });
+	      })
+	    });
 
-        google.maps.event.addListener(marker, 'click', function() {
-          infowindow.setContent(place.name);
-          infowindow.open(map, this);
-        });
-    },*/
-
-  /*  getHeat: function(place){
-    //	console.log(place)
-    	     return [
-	          new google.maps.LatLng(37.782551, -122.445368),
-	          new google.maps.LatLng(37.751266, -122.403355)
-	        ];
-    }*/
+	}
 };
 
 ko.applyBindings(viewModel.init());
