@@ -5,7 +5,7 @@ var model = {
 var viewModel = {
 	init: function(){
 		ajax.init();
-		//rest.init();
+	//	mapped.initMap();
 	}
 }
 var ajax = {
@@ -53,7 +53,9 @@ var infowindow;
  var map;
  var infowindow;
 
-      function initMap() {
+ var mapped = {
+
+      initMap: function() {
         var pyrmont = {lat: 37.09024, lng: -95.712891};
 
         map = new google.maps.Map(document.getElementById('map'), {
@@ -93,6 +95,7 @@ var infowindow;
         });
       }
   }
+};
 
 ko.applyBindings(viewModel.init());
 
