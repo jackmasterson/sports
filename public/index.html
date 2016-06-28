@@ -8,10 +8,31 @@
 	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-	<div id="map"></div>
-	Hello World!
-	<ol id="new-projects"></ol>
-	<a id="select_link">Click</a>
+	<div class="all">
+		<div class="rest">
+			<div class="title">
+				<h3>Heat Map of Colleges of Drafted Players</h3>
+			</div>
+			<div class="filter-div">
+				<select class="filter" name="Filter">
+					<option class="position-opt" value="Choose">Choose Position</option>
+					<option class="position-opt" value="QB">Quarterback</option>
+					<option class="position-opt" value="WR">Wide Receiver</option>
+					<option class="position-opt" value="RB">Running Back</option>
+					<option class="position-opt" value="TE">Tight End</option>
+					<option class="position-opt" value="K">Kicker</option>
+				</select>
+				<button class="select-filter" data-bind="click: mapped.getVal">Select!</button>
+				<button class="clear" data-bind="click:mapped.clearMap">Clear Map</button>
+				<h4 class="positions">Position(s): </span>
+					<span class="header"  data-bind="foreach: model.header"></span><span data-bind="text: model.header"></span>
+				</h4> 
+			</div>
+
+		</div>
+		<div id="map"></div>
+	</div>
+
 	<script src="js/lib/knockout-3.4.0.js"></script>
 	<script src="js/lib/jquery-1.12.4.min.js"></script>
 	<script src="js/script.js"></script>

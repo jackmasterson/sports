@@ -1,12 +1,12 @@
 var model = {
 	info: ko.observableArray(),
-	college: ko.observableArray()
+	college: ko.observableArray(),
+	header: ko.observableArray()
 }
 
 var viewModel = {
 	init: function(){
 		ajax.init();
-	//	mapped.initMap();
 	}
 }
 var ajax = {
@@ -16,135 +16,136 @@ var ajax = {
 			url: "http://localhost:3000/",
 			dataType: "json",
 			success: function(data){
-		//		console.log(data);
 				model.info.push(data);
-		//		console.log(model.info());
-				//rest.init();
-		//		mapped.initMap();
 			}
 		});
 	}
 };
 
-var rest = {
 
-	init: function() {
-
-		 var info = model.info()[0];
-		 info.forEach(function(data){
-		 	 var name = data.name;
-			 var college = data.college;
-			 var position = data.position;
-			// console.log(college);
-			 if(college !== ''){
-//			 	console.log(data);
-			//	model.college()[0].push(data);
-
-			 }
-
-		 })
-
-		 //console.log()
-	}
-};
-
-var geocoder;
-  var map;
+var map, geocoder, latlng;
 
  var mapped = {
 
     initMap: function() {
   		var that = this;
 	    geocoder = new google.maps.Geocoder();
-	    var latlng = new google.maps.LatLng(37.09024, -95.712891);
+	    latlng = new google.maps.LatLng(37.09024, -95.712891);
 	    var mapOptions = {
 	      zoom: 4,
-	      center: latlng
+	      center: latlng,
+	      scrollwheel: false,
+	      draggable: false
 	    }
 	    map = new google.maps.Map(document.getElementById("map"), mapOptions);
-		this.getPoints();
-		//this.codeAddress();
+		
+	},
+
+	getVal: function() {
+		mapped.posVal = (document.getElementsByClassName('filter')[0]).value;
+		mapped.getPoints();
+		model.header.push(' ' +mapped.posVal);
+
 	},
 
     getPoints: function() {
-    //	console.log('place');
-    	//console.log(model.info()[0]);
+    	console.log('getpoints run');
+
     	var that = this;
     	var address;
-		 var info = model.info()[0];
-		 this.queryArr = [];
-		 info.forEach(function(data){
-		 	 var name = data.name;
-			 var college = data.college;
-			 var position = data.position;
-			
-			 if(college !== ''){
-			 	that.queryArr.push(college);
-			 }
+		var info = model.info()[0];
 
-		 });
+		this.queryArr = [];
+
+		info.forEach(function(data){
+			//console.log(mapped.posVal);
+			var pos = data.position;
+			if(pos === mapped.posVal){
+				that.queryArr.push(data);
+		
+			}
+
+		});
 			 	
-
 		 this.getPointInfo();
 	},
 
 	getPointInfo: function() {
 		var that = this;
-		console.log(this.queryArr);
 		var address;
-		that.queryArr.forEach(function(info){
-			address = info;
-			console.log(address)
-    //	var that = this;
+		var heatmap = ko.observable();
+		mapped.heatData = ko.observableArray();
+		console.log(heatmap());
+				    if(heatmap() !== undefined) {
+		          		heatmap.setMap(null);
+		          	}
 
-    	
-	    geocoder.geocode( { 'address': address }, function(results, status) {
+			that.queryArr.forEach(function(info){
+				address = info.college;
 
-	      if (status == google.maps.GeocoderStatus.OK) {
 
-			for (var i = 0; i < results.length; i++) {
-				     //     	console.log(results[i]);
-          	var lat = results[i].geometry.location.lat();
-          	var lng = results[i].geometry.location.lng();
-          	console.log(lat, lng);
-            function heatSpot(){
-	            return [
-		          new google.maps.LatLng(lat, lng),
-		        //  new google.maps.LatLng(37.751266, -122.403355)
-		        ];
-            }
-          }
+			    geocoder.geocode( { 'address': address }, function(results, status) {
 
-	    	 heatmap = new google.maps.visualization.HeatmapLayer({
-	          data: heatSpot(),
-	          map: map
-	        });
+			      if (status === google.maps.GeocoderStatus.OK) {
+					
+					for (var i = 0; i < results.length; i++) {
 
-	        var gradient = [
-	          'rgba(0, 255, 255, 0)',
-	          'rgba(0, 255, 255, 1)',
-	          'rgba(0, 191, 255, 1)',
-	          'rgba(0, 127, 255, 1)',
-	          'rgba(0, 63, 255, 1)',
-	          'rgba(0, 0, 255, 1)',
-	          'rgba(0, 0, 223, 1)',
-	          'rgba(0, 0, 191, 1)',
-	          'rgba(0, 0, 159, 1)',
-	          'rgba(0, 0, 127, 1)',
-	          'rgba(63, 0, 91, 1)',
-	          'rgba(127, 0, 63, 1)',
-	          'rgba(191, 0, 31, 1)',
-	          'rgba(255, 0, 0, 1)'
-	        ]
-	        heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
-	            //mapped.createHeat(results[i]);
+			          	var lat = results[i].geometry.location.lat();
+			          	var lng = results[i].geometry.location.lng();
+				            
+				        mapped.heatData.push( new google.maps.LatLng(lat, lng) );
 
-	      
-	      } else {
-	        alert("Geocode was not successful for the following reason: " + status);
-	      }
-	      })
-	    });
+		          	}
+
+		          	heatmap = ko.observable(new google.maps.visualization.HeatmapLayer({
+			          data: mapped.heatData(),
+			          map: map
+			        }));
+
+			        var gradient = [
+			          'rgba(0, 255, 255, 0)',
+			          'rgba(0, 255, 255, 1)',
+			          'rgba(0, 191, 255, 1)',
+			          'rgba(0, 127, 255, 1)',
+			          'rgba(0, 63, 255, 1)',
+			          'rgba(0, 0, 255, 1)',
+			          'rgba(0, 0, 223, 1)',
+			          'rgba(0, 0, 191, 1)',
+			          'rgba(0, 0, 159, 1)',
+			          'rgba(0, 0, 127, 1)',
+			          'rgba(63, 0, 91, 1)',
+			          'rgba(127, 0, 63, 1)',
+			          'rgba(191, 0, 31, 1)',
+			          'rgba(255, 0, 0, 1)'
+			        ]
+
+			        heatmap().set('gradient', heatmap().get('gradient') ? null : gradient);
+
+			      } 
+			      else {
+
+			        alert("Geocode was not successful for the following reason: " + status);
+			      
+			      }
+
+			    });
+			});
+		$(".positions").show();
+
+
+
+			//console.log('empty!');
+			
+	},
+
+	clearMap: function() {
+	//	console.log(mapped.heatData);
+	//	mapped.posVal = "Choose";
+	//	console.log(mapped.heatData());
+	//	var remove = mapped.heatData();
+	//	remove = [];
+	//	mapped.getPointInfo();
+	console.log('figure out how to clear the map!');
 
 	}
 };
