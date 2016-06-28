@@ -52,7 +52,6 @@ var map, geocoder, latlng;
 
     getPoints: function() {
     	console.log('getpoints run');
- 	//	model.queryArr.removeAll();
  		console.log(model.queryArr());
  		console.log(mapped.posVal());
     	var that = this;
@@ -64,7 +63,6 @@ var map, geocoder, latlng;
 
 			info.forEach(function(data){
 
-				//console.log(mapped.posVal);
 				var pos = data.position;
 				if(pos === mapped.posVal()){
 					model.queryArr.push(data);
@@ -82,14 +80,8 @@ var map, geocoder, latlng;
 	getPointInfo: function() {
 		var that = this;
 		var address;
-	//	var heatmap = ko.observable();
 		mapped.heatData = ko.observableArray();
-	//	console.log(geocoder);
-		//geocoder = '';
 		mapped.geocoder = new google.maps.Geocoder();
-		//console.log(mapped.geocoder);
-		//console.log(model.queryArr());
-//console.log(model.queryArr()[0]);
 
 	
 			model.queryArr().forEach(function(info){
@@ -133,7 +125,7 @@ var map, geocoder, latlng;
 			        ]
 
 			        mapped.heatmap.set('gradient', mapped.heatmap.get('gradient') ? null : gradient);
-			      //  mapped.heatmap.setMap(map);
+
 			      } 
 			      else {
 
@@ -145,15 +137,7 @@ var map, geocoder, latlng;
 
 			});
 
-
-			    //  heatmap().setMap(null);
 		$(".positions").show();
-	
-
-
-
-			//console.log('empty!');
-			
 	},
 
 	clearMap: function() {
