@@ -1,5 +1,42 @@
-#map {
-	height: 400px;
-	width: 800px;
+* {
+	text-align: center;
+	vertical-align: middle;
+	color: white;
+	margin: 0;
+	padding: 0;
 }
 
+button {
+	color: black;
+}
+
+body {
+	background: url(..//football.jpeg) no-repeat;
+	background-size: cover;
+}
+
+.all {
+	background-color: rgba(0,0,0,0.6);
+}
+
+#map {
+	height: 70vh;
+	width: 80vw;
+	margin-left: 11vw;
+}
+
+.title {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.rest {
+	height: 15vh;
+	width: 100vw;
+	padding-bottom: 15px;
+}
+
+.positions {
+	display: none;
+	padding: 8px;
+}
